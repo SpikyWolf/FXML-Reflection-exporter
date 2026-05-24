@@ -1,20 +1,20 @@
-#!/usr/bin/env kotlin
-
-// This should be included in your build.gradle.kts
-tasks.register<JavaExec>("generateFxmlReflection") {
-description = "Automated reflection export task."
-group = "automation"
-mainClass.set("com.spiky.FXMLReflectionExporter.Main")
-classpath = files("tools/FXML-Reflection-exporter-v0.1.0.jar") + configurations["runtimeClasspath"]
-jvmArgs = listOf("--enable-native-access=ALL-UNNAMED") //Just included to mute console warnings, it's optional
-doFirst {
-var compilerArg = "-d"
-if (project.plugins.hasPlugin("org.graalvm.buildtools.native")){compilerArg = "graalvm"}
-if (project.plugins.hasPlugin("com.gluonhq.client-gradle-plugin")){compilerArg = "gluon"}
-args = listOf("-d", compilerArg)
-println("[FxmlExporter] Detected native framework: $compilerArg")
-}
-}
-tasks.named("processResources") {
-dependsOn("generateFxmlReflection")
+<h2>Gradle Kotlin DSL</h2>
+// This should be included in your build.gradle.kts<br>
+tasks.register<JavaExec>("generateFxmlReflection") {<br>
+description = "Automated reflection export task."<br>
+group = "automation"<br>
+mainClass.set("com.spiky.FXMLReflectionExporter.Main")<br>
+classpath = files("tools/FXML-Reflection-exporter-v0.1.0.jar") + configurations["runtimeClasspath"] +<br>
+project.configurations.detachedConfiguration(project.dependencies.create("tools.jackson.core:jackson-databind:3.1.3"))<br>
+jvmArgs = listOf("--enable-native-access=ALL-UNNAMED") //Just included to mute console warnings, it's optional<br>
+doFirst {<br>
+var compilerArg = "-d"<br>
+if (project.plugins.hasPlugin("org.graalvm.buildtools.native")){compilerArg = "graalvm"}<br>
+if (project.plugins.hasPlugin("com.gluonhq.client-gradle-plugin")){compilerArg = "gluon"}<br>
+args = listOf("-d", compilerArg)<br>
+println("[FxmlExporter] Detected native framework: $compilerArg")<br>
+}<br>
+}<br>
+tasks.named("processResources") {<br>
+dependsOn("generateFxmlReflection")<br>
 }
