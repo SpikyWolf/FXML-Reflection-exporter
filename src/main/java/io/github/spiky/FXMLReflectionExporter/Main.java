@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class Main {
-    static boolean debug = false;
     static void main(String[] args) {
         if (args.length!=2){
             System.err.println("""
@@ -73,11 +72,6 @@ public class Main {
                         }
                     }
                     crawler(document.getDocumentElement(), imports, registry);
-                    if (debug){
-                        System.out.print(document.getDocumentElement().getNodeName());
-                        System.out.println("\nImports found: " + imports);
-
-                    }
                 }
             }
             List<GraalClass> payload = new ArrayList<>(registry.values());
@@ -97,13 +91,12 @@ public class Main {
             Files.createDirectories(outputPath.getParent());
             Files.writeString(outputPath, prettyPayload);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("[FxmlReflectionExporter] Fatal error during FXML parsing or JSON generation!", e);
         }
     }
 
     private static void crawler(Node node, Set<String> imports, Map<String, GraalClass> registry) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
-            String reports = "";
             String className = node.getNodeName();
             NodeList children = node.getChildNodes();
             if (Character.isLowerCase(className.charAt(0)) || className.contains(".")) {
@@ -115,7 +108,7 @@ public class Main {
             NamedNodeMap attributes = node.getAttributes();
             Set<String> attributeSet = new HashSet<>();
             Class<?> currentClass = resolveClass(className, imports);
-            Method[] classMethods = null;
+            Method[] classMethods;
 
             for (int i = 0; i < attributes.getLength(); i++) {attributeSet.add(attributes.item(i).getNodeName());}
             for (int i = 0; i < children.getLength(); i++) {
@@ -130,7 +123,6 @@ public class Main {
             }
             if (currentClass == null) {System.out.println("[WARNING] Could not resolve class for " + className);}
             else {
-                //Include "allDeclaredConstructors": true
                 GraalClass gClass = registry.get(currentClass.getName());
                 if (gClass==null){
                     gClass = new GraalClass();
@@ -139,24 +131,12 @@ public class Main {
                 }
                 classMethods = currentClass.getMethods();
                 for (String attr : attributeSet) {
-                    reports+=matchMethods(attr, classMethods, imports, registry, gClass);
+                    matchMethods(attr, classMethods, imports, registry, gClass);
                 }
-            }
-
-            if (debug) {
-                System.out.println("\nNode: " + className);
-                System.out.println("Attributes: " + attributeSet);
-                if (classMethods != null) {
-                    System.out.println("Methods found: " + classMethods.length);
-                } else {
-                    System.out.println("Methods found: null");
-                }
-                System.out.println("[HIT] found matches for:"+reports);
             }
         }
     }
-    private static String matchMethods(String attribute, Method[] classMethods, Set<String> imports, Map<String, GraalClass> registry, GraalClass gClass){
-        String reports="";
+    private static void matchMethods(String attribute, Method[] classMethods, Set<String> imports, Map<String, GraalClass> registry, GraalClass gClass){
         if (attribute.contains(".")) {
             String[] split = attribute.split("\\.");
             String splitClass = split[0];
@@ -170,7 +150,7 @@ public class Main {
                     registry.put(gClass.name, gClass);
                 }
                 classMethods = attributeClass.getMethods();
-                return matchMethods(splitProp, classMethods, imports, registry, gClass);
+                matchMethods(splitProp, classMethods, imports, registry, gClass);
 
             }
         }
@@ -189,17 +169,13 @@ public class Main {
                 if (!exists){
                     GraalMethod gMethod = new GraalMethod();
                     gMethod.name = mName;
-                    if(debug){reports+="\n"+mName;}
                     for (Class<?> param : method.getParameterTypes()){
-                        if (debug){reports+="\n-"+param;}
                         gMethod.parameterTypes.add(param.getName());
                     }
                     gClass.methods.add(gMethod);
                 }
             }
         }
-
-        return reports;
     }
     @JsonPropertyOrder({"name", "parameterTypes"})
     static class GraalMethod {
@@ -209,6 +185,7 @@ public class Main {
     @JsonPropertyOrder({"name","allDeclaredConstructors" , "methods"})
     static class GraalClass {
         public String name;
+        @SuppressWarnings("unused")
         public boolean allDeclaredConstructors = true;
         public List<GraalMethod> methods = new ArrayList<>();
     }
