@@ -2,8 +2,8 @@ plugins {
     id("java")
 }
 
-group = "com.spiky"
-version = "v0.1.0"
+group = "io.github.spiky"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
