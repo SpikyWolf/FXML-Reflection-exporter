@@ -9,15 +9,15 @@ In case you use it as a command line util it expects the following arguments:
 * Argument 2, Your native compiler's name. Currently, the util only recognises GraalVM and Gluon, this argument also accepts "-d" which will default to GraalVM's expected config path.
 
 <h2>Kotlin DSL</h2>
-```Kotlin
+<pre>
 plugins{
     id("io.github.spiky.fxmlreflectionexporter") version "1.0.0"
 }
-```
+</pre>
 
 <h2>Groovy DSL</h2>
-```Groovy
+<pre>
 plugins{
     id 'io.github.spiky.fxmlreflectionexporter' version '1.0.0'
 }
-```
+</pre>
