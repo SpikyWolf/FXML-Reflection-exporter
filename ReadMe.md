@@ -1,22 +1,23 @@
-I am working on getting this util published as a plugin, in the meantime you can use the Kotlin script below to add it to your projects.
+<h1>FXML Reflection Exporter</h1>
+This is a util designed to parse through any fxml files in your JavaFX project and export any relevant methods into a JSON file.<br>
+The JSON file it generates will be written to the path expected by either GraalVM or Gluon depending on which of these are used as a plugin in your project.
+If neither are present it will default to the GraalVM path to allow the util to be used in any project.
 
-<h2>Gradle Kotlin DSL</h2>
-// This should be included in your build.gradle.kts<br>
-tasks.register<JavaExec>("generateFxmlReflection") {<br>
-description = "Automated reflection export task."<br>
-group = "automation"<br>
-mainClass.set("io.github.spiky.FXMLReflectionExporter.Main")<br>
-classpath = files("tools/FXML-Reflection-exporter-v0.1.0.jar") + configurations["runtimeClasspath"] +<br>
-project.configurations.detachedConfiguration(project.dependencies.create("tools.jackson.core:jackson-databind:3.1.3"))<br>
-jvmArgs = listOf("--enable-native-access=ALL-UNNAMED") //Just included to mute console warnings, it's optional<br>
-doFirst {<br>
-var compilerArg = "-d"<br>
-if (project.plugins.hasPlugin("org.graalvm.buildtools.native")){compilerArg = "graalvm"}<br>
-if (project.plugins.hasPlugin("com.gluonhq.client-gradle-plugin")){compilerArg = "gluon"}<br>
-args = listOf("-d", compilerArg)<br>
-println("[FxmlExporter] Detected native framework: $compilerArg")<br>
-}<br>
-}<br>
-tasks.named("processResources") {<br>
-dependsOn("generateFxmlReflection")<br>
+This util is provided both as a Gradle plugin as well as a standalone .Jar to allow for command line use.<br>
+In case you use it as a command line util it expects the following arguments:
+* Argument 1, The path to your FXML file directory, it accepts "-d" as a default which will direct it to src/main/resources. This is also the directory the plugin version will check.
+* Argument 2, Your native compiler's name. Currently, the util only recognises GraalVM and Gluon, this argument also accepts "-d" which will default to GraalVM's expected config path.
+
+<h2>Kotlin DSL</h2>
+```Kotlin
+plugins{
+    id("io.github.spiky.fxmlreflectionexporter") version "1.0.0"
 }
+```
+
+<h2>Groovy DSL</h2>
+```Groovy
+plugins{
+    id 'io.github.spiky.fxmlreflectionexporter' version '1.0.0'
+}
+```
