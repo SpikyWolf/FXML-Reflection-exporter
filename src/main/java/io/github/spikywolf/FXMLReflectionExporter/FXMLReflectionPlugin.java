@@ -1,4 +1,4 @@
-package io.github.spiky.FXMLReflectionExporter;
+package io.github.spikywolf.FXMLReflectionExporter;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -13,9 +13,9 @@ public class FXMLReflectionPlugin implements Plugin<Project> {
         project.getTasks().register("generateFxmlReflection", JavaExec.class, task -> {
            task.setGroup("automation");
            task.setDescription("Automated reflection export task.");
-           task.getMainClass().set("io.github.spiky.FXMLReflectionExporter.Main");
+           task.getMainClass().set("io.github.spikywolf.FXMLReflectionExporter.Main");
            try {
-               File pluginJar = new File(io.github.spiky.FXMLReflectionExporter.Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+               File pluginJar = new File(io.github.spikywolf.FXMLReflectionExporter.Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
                Configuration hostClasspath  = project.getConfigurations().getByName("runtimeClasspath");
                Configuration detachedCfg = project.getConfigurations().detachedConfiguration(project.getDependencyFactory().create("tools.jackson.core:jackson-databind:3.1.3"));
                task.setClasspath(project.files(pluginJar, hostClasspath, detachedCfg));

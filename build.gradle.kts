@@ -6,7 +6,7 @@ plugins {
     id("com.gradleup.shadow") version "9.4.2"
 }
 
-group = "io.github.spiky"
+group = "io.github.spikywolf"
 version = "1.0.0"
 
 repositories {
@@ -37,8 +37,8 @@ gradlePlugin {
     vcsUrl = "https://github.com/SpikyWolf/FXML-Reflection-exporter.git"
     plugins {
         register("fxmlReflectionExporterPlugin") {
-            id = "io.github.spiky.fxmlreflectionexporter"
-            implementationClass = "io.github.spiky.FXMLReflectionExporter.FXMLReflectionPlugin"
+            id = "io.github.spikywolf.fxmlreflectionexporter"
+            implementationClass = "io.github.spikywolf.FXMLReflectionExporter.FXMLReflectionPlugin"
             displayName = "FXML parser for JavaFX reflection config generation"
             description = "A plugin allowing easy reflection config json file generation for native compilers"
             tags = listOf("fxml", "json", "reflection", "config", "javafx", "automation", "graalvm", "gluon", "native compile", "compile")

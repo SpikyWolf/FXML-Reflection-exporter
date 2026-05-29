@@ -11,13 +11,13 @@ In case you use it as a command line util it expects the following arguments:
 <h2>Kotlin DSL</h2>
 <pre>
 plugins{
-    id("io.github.spiky.fxmlreflectionexporter") version "1.0.0"
+    id("io.github.spikywolf.fxmlreflectionexporter") version "1.0.0"
 }
 </pre>
 
 <h2>Groovy DSL</h2>
 <pre>
 plugins{
-    id 'io.github.spiky.fxmlreflectionexporter' version '1.0.0'
+    id 'io.github.spikywolf.fxmlreflectionexporter' version '1.0.0'
 }
 </pre>

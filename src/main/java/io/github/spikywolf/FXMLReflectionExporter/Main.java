@@ -1,4 +1,4 @@
-package io.github.spiky.FXMLReflectionExporter;
+package io.github.spikywolf.FXMLReflectionExporter;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javafx.application.Platform;
