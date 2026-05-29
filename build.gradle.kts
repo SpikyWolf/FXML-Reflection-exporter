@@ -44,7 +44,7 @@ gradlePlugin {
             tags = listOf("fxml", "json", "reflection", "config", "javafx", "automation", "graalvm", "gluon", "native compile", "compile")
             compatibility {
                 features {
-                    configurationCache = false
+                    configurationCache = true
                 }
             }
         }
